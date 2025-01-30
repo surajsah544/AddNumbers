@@ -1,0 +1,47 @@
+name: Maven Build & Test on Windows
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest  # Use a Windows runner
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Validate Maven Project
+        run: mvn validate
+        shell: cmd  # Run commands in Windows Command Prompt
+
+      - name: Compile Source Code
+        run: mvn compile
+        shell: cmd
+
+      - name: Run Unit Tests
+        run: mvn test
+        shell: cmd
+
+      - name: Package Application
+        run: mvn package
+        shell: cmd
+
+      - name: Run the Application
+        run: mvn exec:java -Dexec.mainClass="com.example.Calculator"
+        shell: cmd
+
+      - name: Clean Build Directory
+        run: mvn clean
+        shell: cmd
